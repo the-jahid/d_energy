@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 
-
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -63,7 +62,9 @@ export default function SidebarDemo({
 
         </SidebarBody>
       </Sidebar>
-      <Dashboard children={children}/>
+      <Dashboard>
+        {children}
+      </Dashboard>
     </div>
   );
 }
