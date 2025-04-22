@@ -1,210 +1,113 @@
-"use client"
+import Link from "next/link"
+import { CheckCircle, MessageSquare, Calendar, History, ThumbsUp, Mic } from "lucide-react"
 
-import type React from "react"
+import { Button } from "@/components/ui/button"
+import FeatureCard from "@/components/feature-card"
 
-import { useEffect, useState } from "react"
-import { CheckCircle } from "lucide-react"
-import { useRouter } from "next/navigation";
 
-export default function UserProfileForm() {
-  const [jobTitle, setJobTitle] = useState("")
-  const [industry, setIndustry] = useState("")
-  const [website, setWebsite] = useState("")
-  const [products, setProducts] = useState("")
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [profileData, setProfileData] = useState(null);
-  const router = useRouter();
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://elevenlabs.io/convai-widget/index.js";
-    script.async = true;
-    script.type = "text/javascript";
-    document.body.appendChild(script);
-
-    const storedProfile = localStorage.getItem("userProfile");
-    if (storedProfile) {
-      setProfileData(JSON.parse(storedProfile));
-    }
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-
-    if (!jobTitle.trim()) newErrors.jobTitle = "Job title is required"
-    if (!industry.trim()) newErrors.industry = "Industry is required"
-    if (!website.trim()) newErrors.website = "Website is required"
-    else if (!/^https?:\/\/.+/.test(website)) newErrors.website = "Website must start with http:// or https://"
-    if (!products.trim()) newErrors.products = "Products are required"
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateForm()) return
-
-    const userProfile = {
-      jobTitle,
-      industry,
-      website,
-      products: products.split(",").map((p) => p.trim()),
-    }
-
-    localStorage.setItem("userProfile", JSON.stringify(userProfile))
-    console.log("Saved user profile:", userProfile)
-
-    setIsSubmitted(true)
-    // setProfileData(userProfile);
-
-    setTimeout(() => {
-      router.push('/');
-    }, 1000);
-
-    // Reset form after submission
-    setTimeout(() => {
-      setJobTitle("")
-      setIndustry("")
-      setWebsite("")
-      setProducts("")
-      setIsSubmitted(false)
-    }, 3000)
-
-    window.location.reload()
-  }
-
+export default function Home() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-black text-white flex items-center justify-center p-4 flex-col">
+    <div className="min-h-screen flex flex-col">
       
 
-      {profileData ? (
-        <div className="text-white text-center mt-4">
-          Ai voice conversation
-        </div>
-      ) : (
-        <div className="w-full max-w-xl rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-sm shadow-xl overflow-hidden">
-        {/* Header */}
-        <div className="p-6 pb-4 border-b border-gray-800">
-          <h2 className="text-2xl font-bold text-center text-white mb-1">Professional Profile</h2>
-          <p className="text-white/80 text-center text-sm">Complete your profile to personalize your experience</p>
-        </div>
-
-        {/* Form Content */}
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <label htmlFor="jobTitle" className="block text-sm font-medium text-white">
-                Job Title
-              </label>
-              <input
-                id="jobTitle"
-                type="text"
-                placeholder="e.g. Senior Developer"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                className={`w-full bg-gray-900/70 text-white border ${
-                  errors.jobTitle ? "border-red-600" : "border-gray-800"
-                } rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-gray-500`}
-              />
-              {errors.jobTitle && <p className="text-red-500 text-xs mt-1">{errors.jobTitle}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="industry" className="block text-sm font-medium text-white">
-                Industry
-              </label>
-              <input
-                id="industry"
-                type="text"
-                placeholder="e.g. Technology"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-                className={`w-full bg-gray-900/70 text-white border ${
-                  errors.industry ? "border-red-600" : "border-gray-800"
-                } rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-gray-500`}
-              />
-              {errors.industry && <p className="text-red-500 text-xs mt-1">{errors.industry}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="website" className="block text-sm font-medium text-white">
-                Website
-              </label>
-              <input
-                id="website"
-                type="url"
-                placeholder="https://example.com"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                className={`w-full bg-gray-900/70 text-white border ${
-                  errors.website ? "border-red-600" : "border-gray-800"
-                } rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-gray-500`}
-              />
-              {errors.website && <p className="text-red-500 text-xs mt-1">{errors.website}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="products" className="block text-sm font-medium text-white">
-                Products Offered
-              </label>
-              <textarea
-                id="products"
-                placeholder="e.g. Web Development, Mobile Apps, UI/UX Design"
-                value={products}
-                onChange={(e) => setProducts(e.target.value)}
-                className={`w-full bg-gray-900/70 text-white border ${
-                  errors.products ? "border-red-600" : "border-gray-800"
-                } rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-gray-500 min-h-[100px] resize-none`}
-              />
-              <p className="text-xs text-white/70">Separate multiple products with commas</p>
-              {errors.products && <p className="text-red-500 text-xs mt-1">{errors.products}</p>}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 mt-6 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-            >
-              Save Profile
-            </button>
-          </form>
-        </div>
-
-        {/* Success Message */}
-        {isSubmitted && (
-          <div className="border-t border-gray-800 bg-gray-900/50 py-4 px-6 flex items-center justify-center gap-2 animate-[fadeIn_0.3s_ease-out]">
-            <CheckCircle className="h-5 w-5 text-emerald-500" />
-            <span className="text-white font-medium">Profile saved successfully!</span>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-slate-50 to-slate-100 py-16 md:py-24">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Welcome to Ariana Coach</h1>
+          <p className="text-xl md:text-2xl text-slate-700 mb-8 max-w-3xl mx-auto">
+            She can help you with your challenges as a manager.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-lg px-8">
+              <Link href="/signup">Get Started</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8">
+              <Link href="/learn-more">Learn More</Link>
+            </Button>
           </div>
-        )}
-      </div>
-      )}
+        </div>
+      </section>
 
-     {
-      profileData &&  <div className="flex justify-center bg-amber-300 w-10/12 "
-      dangerouslySetInnerHTML={{
-        __html:
-          '<elevenlabs-convai agent-id="2LYD5Ox33ApwHwKhskUX"></elevenlabs-convai>',
-      }}
-    />
-     }
+      {/* Features Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">How Ariana Helps Business Leaders</h2>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={<MessageSquare className="h-10 w-10 text-primary" />}
+              title="Voice & Text Interaction"
+              description="Communicate with Ariana through voice or text chat, whichever you prefer in the moment."
+            />
+
+            <FeatureCard
+              icon={<History className="h-10 w-10 text-primary" />}
+              title="Conversation Memory"
+              description="Ariana remembers your past interactions, creating a continuous coaching relationship."
+            />
+
+            <FeatureCard
+              icon={<Calendar className="h-10 w-10 text-primary" />}
+              title="Scheduled Sessions"
+              description="Book appointments or start impromptu coaching sessions whenever you need guidance."
+            />
+
+            <FeatureCard
+              icon={<CheckCircle className="h-10 w-10 text-primary" />}
+              title="Personalized Coaching"
+              description="Get advice tailored to your specific role and challenges as a business leader."
+            />
+
+            <FeatureCard
+              icon={<ThumbsUp className="h-10 w-10 text-primary" />}
+              title="Continuous Improvement"
+              description="Provide feedback to help Ariana better serve your needs over time."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-slate-50">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-8">Ready to Start Your Coaching Journey?</h2>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Button size="lg" className="text-lg px-8">
+              <Link href="/book">Book Appointment</Link>
+            </Button>
+            <Button size="lg" variant="secondary" className="text-lg px-8">
+              <Link href="/session">Start Session</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="mt-auto py-8 bg-slate-800 text-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center gap-2 mb-4 md:mb-0">
+              <Mic className="h-6 w-6" />
+              <span className="text-xl font-bold">voice</span>
+            </div>
+            <div className="flex gap-8">
+              <Link href="/privacy" className="hover:underline">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:underline">
+                Terms
+              </Link>
+              <Link href="/contact" className="hover:underline">
+                Contact
+              </Link>
+            </div>
+          </div>
+          <div className="mt-6 text-center md:text-left text-slate-400">
+            <p>© {new Date().getFullYear()} Ariana Coach. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-

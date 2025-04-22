@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation";
 
@@ -13,7 +13,25 @@ export default function UserProfileForm() {
   const [products, setProducts] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [profileData, setProfileData] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://elevenlabs.io/convai-widget/index.js";
+    script.async = true;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+
+    const storedProfile = localStorage.getItem("userProfile");
+    if (storedProfile) {
+      setProfileData(JSON.parse(storedProfile));
+    }
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -41,13 +59,14 @@ export default function UserProfileForm() {
     }
 
     localStorage.setItem("userProfile", JSON.stringify(userProfile))
-    console.log("Saved user profile:", userProfile)
+    
 
     setIsSubmitted(true)
+    // setProfileData(userProfile);
 
-    setTimeout(() => {
-      router.push('/');
-    }, 1000);
+    // setTimeout(() => {
+    //   router.push('/');
+    // }, 1000);
 
     // Reset form after submission
     setTimeout(() => {
@@ -57,11 +76,21 @@ export default function UserProfileForm() {
       setProducts("")
       setIsSubmitted(false)
     }, 3000)
+
+    window.location.reload()
+    router.push('/');
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-black text-white flex items-center justify-center p-4">
-      <div className="w-full max-w-xl rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-sm shadow-xl overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-black text-white flex items-center justify-center p-4 flex-col">
+      
+
+      {profileData ? (
+        <div className="text-white text-center mt-4">
+          Ai voice conversation
+        </div>
+      ) : (
+        <div className="w-full max-w-xl rounded-xl border border-gray-800 bg-gray-950/80 backdrop-blur-sm shadow-xl overflow-hidden">
         {/* Header */}
         <div className="p-6 pb-4 border-b border-gray-800">
           <h2 className="text-2xl font-bold text-center text-white mb-1">Professional Profile</h2>
@@ -156,12 +185,27 @@ export default function UserProfileForm() {
           </div>
         )}
       </div>
+      )}
+
+     {
+      profileData &&  <div className="flex justify-center bg-amber-300 w-10/12 "
+      dangerouslySetInnerHTML={{
+        __html:
+          '<elevenlabs-convai agent-id="2LYD5Ox33ApwHwKhskUX"></elevenlabs-convai>',
+      }}
+    />
+     }
     </div>
   )
 }
 
-// Add this to your globals.css or as a style tag in your layout if you need the animation
-// @keyframes fadeIn {
-//   from { opacity: 0; transform: translateY(-10px); }
-//   to { opacity: 1; transform: translateY(0); }
-// }
+
+
+
+
+
+
+
+
+
+
