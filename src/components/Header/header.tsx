@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Mic } from "lucide-react"
 import {
-    ClerkProvider,
+ 
     SignInButton,
     SignUpButton,
     SignedIn,
