@@ -1,19 +1,13 @@
 "use client";
 import React, { useState } from "react";
 
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from "@tabler/icons-react";
+
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import Chatbot from "./chatbot/page";
-import { BotIcon, BotMessageSquare, ChartArea, Home, LogOut, LucideVoicemail } from "lucide-react";
-import { div } from "motion/react-m";
-import { SignOutButton } from "@clerk/nextjs";
+
+import { BotIcon,  Home,  LucideVoicemail } from "lucide-react";
+
 
 
 export default function SidebarDemo({

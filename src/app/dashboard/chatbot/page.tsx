@@ -51,7 +51,7 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false)
   const [chatId, setChatId] = useState<string | null>(null)
   const [sessionId, setSessionId] = useState<string>("")
-  const [fileUploading, setFileUploading] = useState(false)
+//   const [fileUploading, setFileUploading] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
